@@ -2,6 +2,7 @@ package com.dreaming.chapter05;
 
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
+import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 import java.util.ArrayList;
 
@@ -40,7 +41,8 @@ public class SourceTest {
 //        stream3.print("3");
         stream4.print("4");
 
-        env.addSource
+        // 5、从Kafka中读取数据
+        env.addSource(new FlinkKafkaConsumer<String>())
 
         env.execute();
     }
