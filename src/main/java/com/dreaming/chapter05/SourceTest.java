@@ -1,10 +1,12 @@
 package com.dreaming.chapter05;
 
+import org.apache.flink.api.common.serialization.SimpleStringSchema;
 import org.apache.flink.streaming.api.datastream.DataStreamSource;
 import org.apache.flink.streaming.api.environment.StreamExecutionEnvironment;
 import org.apache.flink.streaming.connectors.kafka.FlinkKafkaConsumer;
 
 import java.util.ArrayList;
+import java.util.Properties;
 
 public class SourceTest {
     public static void main(String[] args) throws Exception{
@@ -39,10 +41,20 @@ public class SourceTest {
 //        numStream.print("nums");
 //        stream2.print("2");
 //        stream3.print("3");
-        stream4.print("4");
+//        stream4.print("4");
 
         // 5、从Kafka中读取数据
-        env.addSource(new FlinkKafkaConsumer<String>())
+        Properties properties = new Properties();
+        properties.setProperty("bootstrap.servers", "hadoop101:9092");
+        properties.setProperty("group.id", "consumer-group");
+        properties.setProperty("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.setProperty("value.descrializer", "org.apache.kafka.common.serialization.StringDeserializer");
+        properties.setProperty("auto.offset.reset", "latest");
+
+
+        DataStreamSource<String> kafkaStream = env.addSource(new FlinkKafkaConsumer<String>("clicks", new SimpleStringSchema(), properties));
+
+        kafkaStream.print();
 
         env.execute();
     }
